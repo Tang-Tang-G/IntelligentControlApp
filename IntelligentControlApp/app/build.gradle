@@ -27,20 +27,24 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    def listSubFile = {
+        def resFolder = 'src/main/res/layout'
+        def files = file(resFolder).listFiles()
+        def folders = []
+        files.each {
+            item -> folders.add(item.absolutePath)
+        }
+        folders.add(file(resFolder).parentFile.absolutePath)
+        return folders
+    }
     sourceSets {
         main {
-            res.srcDirs = [
-                    'src/main/res/activity_layout',
-                    'src/main/res/fragment_layout',
-                    'src/main/res'
-            ]
+            res.srcDirs = listSubFile()
         }
     }
-
 }
 
 dependencies {
-
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity
@@ -48,4 +52,8 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'com.google.android.material:material:1.4.0'
+
 }
