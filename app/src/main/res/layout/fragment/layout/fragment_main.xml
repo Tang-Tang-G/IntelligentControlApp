@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.MainFragment"
+    android:orientation="vertical"
+    android:background="@color/theme"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue"
+        android:orientation="horizontal"
+        >
+
+        <Spinner
+            android:id="@+id/spinner_home_list"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:spinnerMode="dropdown" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/ib_add_component"
+            android:layout_width="21dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="20dp"
+            android:background="@color/blue"
+            android:clickable="true"
+            android:src="@drawable/add_drawable" />
+    </LinearLayout>
+    <!-- 容器用于显示家庭的设备 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    <LinearLayout
+        android:id="@+id/device_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"/>
+        <!-- 动态添加设备控件 -->
+    </ScrollView>
+</LinearLayout>

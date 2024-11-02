@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:padding="16dp">
+    <EditText
+    android:id="@+id/ssidEditText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="SSID" />
+    <EditText
+    android:id="@+id/passwdEditText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Password"
+    android:inputType="textPassword" />
+    <EditText
+    android:id="@+id/hostEditText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Host" />
+    <Button
+        android:id="@+id/bindButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="绑定" />
+</LinearLayout>

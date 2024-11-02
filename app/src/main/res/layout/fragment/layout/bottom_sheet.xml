@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/add_device"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="添加设备"
+        android:textSize="18sp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/add_scene"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="添加场景"
+        android:textSize="18sp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/add_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="添加区域"
+        android:textSize="18sp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/add_member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="添加家庭成员"
+        android:textSize="18sp"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"/>
+</LinearLayout>
