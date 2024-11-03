@@ -1,16 +1,12 @@
 package com.example.intelligentcontrolapp.fragments;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -25,7 +21,8 @@ public class HomeFragment extends Fragment {
     private LinearLayout familyContainer;
     private View rootview;
     private ImageView device;
-    private String ssid,passwd,host;
+    private String ssid, passwd, host;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -38,20 +35,14 @@ public class HomeFragment extends Fragment {
         device = rootview.findViewById(R.id.ib_device_pair);
 
         // 设置点击事件
-        addFamily.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // 创建新的用户视图
-                addFamily();
-            }
+        addFamily.setOnClickListener(view -> {
+            // 创建新的用户视图
+            addFamily();
         });
 
-        device.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //弹出弹窗在里面输入ssid，passwd，host  用来连接设备wife
-                showWiFiDialog();
-            }
+        device.setOnClickListener(view -> {
+            //弹出弹窗在里面输入ssid，passwd，host  用来连接设备wife
+            showWiFiDialog();
         });
 
         return rootview;
@@ -69,6 +60,7 @@ public class HomeFragment extends Fragment {
         });
         dialog.show();
     }
+
     private void addFamily() {
         // 使用独立的方法创建新的用户卡片
         CardView newUserCard = createNewUserCard();

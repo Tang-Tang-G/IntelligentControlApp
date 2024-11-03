@@ -2,11 +2,9 @@ package com.example.intelligentcontrolapp.activities;
 
 import static com.example.intelligentcontrolapp.MyApplication.isPasswordStrong;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,8 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.intelligentcontrolapp.MyApplication;
 import com.example.intelligentcontrolapp.R;
-import com.example.intelligentcontrolapp.fragments.MyFragment;
-import com.example.intelligentcontrolapp.network.LoginCallback;
+import com.example.intelligentcontrolapp.network.CustomCallback;
 import com.example.intelligentcontrolapp.network.NetworkUtils;
 
 public class LoginActivity extends AppCompatActivity {
@@ -32,68 +29,51 @@ public class LoginActivity extends AppCompatActivity {
         et_password = findViewById(R.id.et_login_password);
 
         //返回，销毁页面
-        findViewById(R.id.toolbar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        findViewById(R.id.toolbar).setOnClickListener(view -> finish());
 
         //点击注册
-        findViewById(R.id.tv_register).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        findViewById(R.id.tv_register).setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
 
         //忘记密码
-        findViewById(R.id.tv_forget_password).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
-                startActivity(intent);
-            }
+        findViewById(R.id.tv_forget_password).setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
+            startActivity(intent);
         });
 
         //登录
-        findViewById(R.id.b_login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = et_username.getText().toString();
-                String password = et_password.getText().toString();
+        findViewById(R.id.b_login).setOnClickListener(view -> {
+            String username = et_username.getText().toString();
+            String password = et_password.getText().toString();
 
-                if (password.isEmpty() || username.isEmpty() || !isPasswordStrong(password)) {
-                    Toast.makeText(LoginActivity.this, "请输入有效的用户名和密码", Toast.LENGTH_SHORT).show();
-                    return;
+            if (password.isEmpty() || username.isEmpty() || !isPasswordStrong(password)) {
+                Toast.makeText(LoginActivity.this, "请输入有效的用户名和密码", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            NetworkUtils.login(LoginActivity.this, username, password, new CustomCallback<String>() {
+                @Override
+                public void onSuccess(String token) {
+                    Log.d("LoginActivity", "Login success: token:" + token);
+                    // This need run on the main UI thread
+                    // Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+                    MyApplication.getPreferencesManager().saveToken(token);
+                    MyApplication.getPreferencesManager().saveUserInfo(username);
+
+                    // 登录成功后，启动 MainActivity 并传递需要显示的片段信息
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
 
-                NetworkUtils.login(LoginActivity.this, username, password, new LoginCallback() {
-                    @Override
-                    public void onSuccess(String token) {
-                        Log.d("LoginActivity", "Login success: token:" + token);
-                        // 登录成功后的逻辑
-                        // 例如保存 token、username  并跳转到主界面
-                        Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
-                        MyApplication.getPreferencesManager().saveToken(token);
-                        MyApplication.getPreferencesManager().saveUserInfo(username);
-                        // 登录成功后，启动 MainActivity 并传递需要显示的片段信息
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        Log.d("LoginActivity", "Login error: " + error);
-                        // 处理登录失败的逻辑
-                        Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                @Override
+                public void onError(String message) {
+                    Log.d("LoginActivity", "Login error: " + message);
+                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
-
     }
-
 }
