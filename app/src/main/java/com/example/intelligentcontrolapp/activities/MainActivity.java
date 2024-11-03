@@ -32,10 +32,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         list = new ArrayList<>();
 
-        MyApplication
-                .getPreferencesManager()
-                .fetchDevicesData(this);
-
         list.add(new MainFragment());
         list.add(new HomeFragment());
         list.add(new SceneFragment());

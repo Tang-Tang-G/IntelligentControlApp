@@ -40,7 +40,6 @@ public class MyFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         if (MyApplication.getPreferencesManager().isEmptyToken()) {
             //未登录状态
             rootview = inflater.inflate(R.layout.fragment_my, container, false);

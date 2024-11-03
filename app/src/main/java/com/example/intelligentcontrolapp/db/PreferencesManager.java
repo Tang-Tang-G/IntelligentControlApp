@@ -9,7 +9,6 @@ import com.example.intelligentcontrolapp.network.NetworkUtils;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PreferencesManager {
@@ -19,49 +18,31 @@ public class PreferencesManager {
     private final SharedPreferences sharedPreferences;
     private List<House> houses = null;
 
-    public List<House> getHouses() {
-        if (houses == null) {
-            return new ArrayList<>();
-        }
-        return houses;
-    }
-
-    public void setHouses(List<House> newHouses) {
-        houses = newHouses;
-    }
-
-    public List<Area> getAreas(String house_name) {
-        for (House house : houses) {
-            if (house.getName().equals(house_name)) {
-                return house.getAreas();
-            }
-        }
-        return new ArrayList<>();
-    }
-
-    public JsonParser getJsonParser(){
-        return jsonParser;
-    }
-
-    private void fetchData(Context context) {
+    private void fetchData(Context context, CustomCallback<List<House>> callback) {
         NetworkUtils.getDataInfo(context, new CustomCallback<JSONObject>() {
             @Override
             public void onSuccess(JSONObject dataInfo) {
                 Log.d(TAG, "Success datainfo");
                 //获取家庭数据，区域数据，设备数据
-                setHouses(jsonParser.parseJsonData(dataInfo));
+                houses = jsonParser.parseJsonData(dataInfo);
+                callback.onSuccess(houses);
             }
             @Override
             public void onError(String message) {
                 Log.e(TAG, "Error datainfo:" + message);
+                callback.onError(message);
             }
         });
     }
 
-    public void fetchDevicesData(Context context) {
-        if (!isEmptyToken() && (houses == null || houses.isEmpty())) {
-            Log.d(this.getClass().getName(), "fetchData");
-            fetchData(context);
+    public void fetchDevicesData(Context context, CustomCallback<List<House>> callback) {
+        if (houses == null || houses.isEmpty()) {
+            if (!isEmptyToken()) {
+                Log.d(this.getClass().getName(), "fetchData");
+                fetchData(context, callback);
+            }
+        } else {
+            callback.onSuccess(houses);
         }
     }
 
