@@ -153,7 +153,6 @@ public class MainFragment extends Fragment {
     private View getDeviceView(String deviceType, String deviceName) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         int layoutId;
-
         switch (deviceType) {
             case "light":
                 layoutId = R.layout.device_light;

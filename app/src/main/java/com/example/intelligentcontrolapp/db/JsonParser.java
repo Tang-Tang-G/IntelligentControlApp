@@ -30,9 +30,12 @@ public class JsonParser {
                         String deviceName = device.getString("device_name");
 
                         String deviceType = device.getJSONObject("device_type").getString("type_name");
+                        int deviceID = device.getInt("device_id");
                         // 创建设备对象并添加到区域
-                        Device deviceObj = new Device(deviceName, deviceType);
+                        Device deviceObj = new Device(deviceID,deviceName, deviceType);
                         newArea.addDevice(deviceObj);
+                        //将service添加到devices
+
                     }
                     // 将区域添加到房屋
                     newHouse.addArea(newArea);
