@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:orientation="horizontal"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="5dp"
     android:background="@color/gray_blue"
     android:layout_height="120dp">
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/tv"
+        android:src="@drawable/light"
         />
     <LinearLayout
         android:layout_marginRight="10dp"
@@ -57,7 +57,7 @@
             android:id="@+id/off_on"
             android:layout_width="match_parent"
             android:layout_height="15dp"
-            android:checked="true"
+            android:checked="false"
             android:text="开/关"
             android:textOff="@string/Close"
             android:textOn="@string/Open"

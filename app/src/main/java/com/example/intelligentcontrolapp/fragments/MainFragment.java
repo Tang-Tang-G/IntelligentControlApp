@@ -1,17 +1,21 @@
 package com.example.intelligentcontrolapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -22,6 +26,7 @@ import com.example.intelligentcontrolapp.db.Area;
 import com.example.intelligentcontrolapp.db.Device;
 import com.example.intelligentcontrolapp.db.House;
 import com.example.intelligentcontrolapp.network.CustomCallback;
+import com.example.intelligentcontrolapp.network.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -132,8 +137,8 @@ public class MainFragment extends Fragment {
                     // 获取设备类型和名称
                     String deviceType = device.getType();
                     String deviceName = device.getName();
-
-                    View deviceView = getDeviceView(deviceType, deviceName);
+                    int deviceID = device.getDevice_id();
+                    View deviceView = getDeviceView(deviceType, deviceName,deviceID);
                     deviceContainer.addView(deviceView);
                 } catch (Exception e) {
                     // 打印错误日志，并添加一个错误提示
@@ -150,7 +155,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private View getDeviceView(String deviceType, String deviceName) {
+    private View getDeviceView(String deviceType, String deviceName,int deviceID) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         int layoutId;
         switch (deviceType) {
@@ -184,6 +189,36 @@ public class MainFragment extends Fragment {
         TextView deviceTypeView = deviceView.findViewById(R.id.tv_device_type);
         deviceTypeView.setText(deviceType);
 
+        SwitchCompat s = deviceView.findViewById(R.id.off_on);
+        // 读取当前状态
+        boolean currentStatus = s.isChecked();
+        Log.d("MainFragment", "Current status of " + deviceName + " is " + (currentStatus ? "ON" : "OFF"));
+
+        s.setOnCheckedChangeListener((buttonView,isChecked)->{
+            // 切换状态（开/关）
+            toggleSwitch(deviceID, isChecked, deviceView);
+        });
+
         return deviceView;
     }
+
+    private void toggleSwitch(int deviceID, boolean isChecked, View deviceView) {
+        // 这里可以根据具体的实现方式，通过网络请求或本地操作更新设备状态
+
+        // 发送网络请求更新设备状态
+        String service_name = isChecked ? "open" : "close";
+
+        NetworkUtils.getService(getContext(),deviceID,service_name, new CustomCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+
+            }
+            @Override
+            public void onError(String message) {
+                onError(message);
+            }
+        });
+    }
+
+
 }

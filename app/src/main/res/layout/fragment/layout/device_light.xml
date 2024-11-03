@@ -53,7 +53,7 @@
             android:textStyle="bold"
             />
     </LinearLayout>
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/off_on"
         android:layout_width="match_parent"
         android:layout_height="15dp"
