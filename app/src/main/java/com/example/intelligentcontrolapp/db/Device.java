@@ -2,11 +2,10 @@ package com.example.intelligentcontrolapp.db;
 
 public class Device {
     private String name;
-    private String type;
-
+    private  String type;
     public Device(String name, String type) {
         this.name = name;
-        this.type = type;
+        this.type =type;
     }
 
     public String getName() {

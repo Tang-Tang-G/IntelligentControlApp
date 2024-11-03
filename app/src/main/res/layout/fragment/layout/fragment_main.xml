@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MainFragment"
     android:orientation="vertical"
-    android:background="@color/theme"
+    android:background="@color/white"
     >
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,6 +36,7 @@
             android:clickable="true"
             android:src="@drawable/add_drawable" />
     </LinearLayout>
+
     <!-- 容器用于显示家庭的设备 -->
     <ScrollView
         android:layout_width="match_parent"
@@ -46,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"/>
+       />
         <!-- 动态添加设备控件 -->
     </ScrollView>
 </LinearLayout>

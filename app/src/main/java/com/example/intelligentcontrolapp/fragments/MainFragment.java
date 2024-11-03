@@ -58,6 +58,13 @@ public class MainFragment extends Fragment {
                 for (House house : data) {
                     labelNames.add(house.getName());
                 }
+                //家庭列表设计
+                labelNames.add("家庭管理"); // 添加 "Manage Homes" 选项
+                homeListAdapter = new HomeListAdapter(getContext(), labelNames.toArray(new String[0]));
+                //将适配器与下拉列表框关联起来
+                homeList.setAdapter(homeListAdapter);
+
+                homeListAdapter.setOnHomeSelectedListener((home, position) -> homeList.setSelection(position));
 
                 if (!data.isEmpty()) {
                     FragmentActivity activity = getActivity();
@@ -75,14 +82,8 @@ public class MainFragment extends Fragment {
             }
         });
 
-
         //添加按钮。
         addButton.setOnClickListener(view -> MyApplication.getInstance().addComponent(getContext()));
-        //家庭列表设计
-        homeListAdapter = new HomeListAdapter(getContext(), labelNames.toArray(new String[0]));
-        //将适配器与下拉列表框关联起来
-        homeList.setAdapter(homeListAdapter);
-        homeListAdapter.setOnHomeSelectedListener((home, position) -> homeList.setSelection(position));
         //某个家庭列表被点击时，设置 HomeListAdapter 的选中位置，更新设备列表，并且刷新这个fragment。
         homeList.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -107,7 +108,6 @@ public class MainFragment extends Fragment {
                 }
         );
 
-        labelNames.add("家庭管理"); // 添加 "Manage Homes" 选项
         return rootView;
     }
 
@@ -116,12 +116,12 @@ public class MainFragment extends Fragment {
 
         List<Device> devices = houses
                 .stream()
+                .filter(house -> house.getName().equals(home))
                 .map(House::getAreas)
                 .flatMap(Collection::stream)
                 .map(Area::getDevices)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-
 
         // 清空所有的设备列表
         deviceContainer.removeAllViews();
@@ -158,8 +158,20 @@ public class MainFragment extends Fragment {
             case "light":
                 layoutId = R.layout.device_light;
                 break;
-            case "TV":
+            case "tv":
                 layoutId = R.layout.device_tv;
+                break;
+            case "air-condition":
+                layoutId = R.layout.device_air_condition;
+                break;
+            case "water-machine":
+                layoutId = R.layout.device_water_machine;
+                break;
+            case "fan":
+                layoutId = R.layout.device_fan;
+                break;
+            case "switch":
+                layoutId = R.layout.device_switch;
                 break;
             default:
                 layoutId = R.layout.device;
@@ -168,8 +180,10 @@ public class MainFragment extends Fragment {
         View deviceView = inflater.inflate(layoutId, deviceContainer, false);
 
         TextView deviceNameView = deviceView.findViewById(R.id.tv_device_name);
-
         deviceNameView.setText(deviceName);
+
+        TextView deviceTypeView = deviceView.findViewById(R.id.tv_device_type);
+        deviceTypeView.setText(deviceType);
 
         return deviceView;
     }

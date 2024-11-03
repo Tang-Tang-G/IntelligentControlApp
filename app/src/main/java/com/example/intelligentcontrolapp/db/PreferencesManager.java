@@ -22,7 +22,8 @@ public class PreferencesManager {
         NetworkUtils.getDataInfo(context, new CustomCallback<JSONObject>() {
             @Override
             public void onSuccess(JSONObject dataInfo) {
-                Log.d(TAG, "Success datainfo");
+                Log.d(TAG, "Success datainfo  is:  "+dataInfo.toString());
+
                 //获取家庭数据，区域数据，设备数据
                 houses = jsonParser.parseJsonData(dataInfo);
                 callback.onSuccess(houses);

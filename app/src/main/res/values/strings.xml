@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">IntelligentControlApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">hello_blank_fragment</string>
     <string name="URL_LOGIN">http://47.108.27.238/api/login</string>
     <string name="URL_REGISTER">http://47.108.27.238/api/signup</string>

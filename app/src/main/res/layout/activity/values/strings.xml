@@ -1,1 +1,6 @@
-<resources></resources>
+<resources>
+    <string name="DeviceName">设备名:</string>
+    <string name="DeviceType">设备类型:</string>
+    <string name="Close">关机</string>
+    <string name="Open">开机</string>
+</resources>

@@ -28,6 +28,7 @@ public class JsonParser {
                     for (int k = 0; k < devices.length(); k++) {
                         JSONObject device = devices.getJSONObject(k);
                         String deviceName = device.getString("device_name");
+
                         String deviceType = device.getJSONObject("device_type").getString("type_name");
                         // 创建设备对象并添加到区域
                         Device deviceObj = new Device(deviceName, deviceType);
@@ -42,7 +43,6 @@ public class JsonParser {
         } catch (JSONException e) {
             Log.e("JsonParser", "JSON parsing error: " + e.getMessage());
         }
-
         return houseList;
     }
 }
