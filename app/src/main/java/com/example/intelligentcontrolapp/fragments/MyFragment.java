@@ -3,7 +3,6 @@ package com.example.intelligentcontrolapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -25,8 +23,6 @@ import com.example.intelligentcontrolapp.activities.LoginActivity;
 import com.example.intelligentcontrolapp.activities.MainActivity;
 import com.example.intelligentcontrolapp.activities.PrivacyPolicyActivity;
 import com.example.intelligentcontrolapp.activities.SystemNotificationActivity;
-import com.example.intelligentcontrolapp.network.NetworkUtils;
-import com.example.intelligentcontrolapp.network.UserInfoCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +46,9 @@ public class MyFragment extends Fragment {
             rootview = inflater.inflate(R.layout.fragment_my, container, false);
             login = rootview.findViewById(R.id.tv_login);
             //点击前往登录
-            login.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    startActivity(intent);
-                }
+            login.setOnClickListener(view -> {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
             });
         } else {
             setupLoggedInView();

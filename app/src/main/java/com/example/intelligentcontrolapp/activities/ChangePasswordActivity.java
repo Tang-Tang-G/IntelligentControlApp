@@ -1,7 +1,6 @@
 package com.example.intelligentcontrolapp.activities;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -10,7 +9,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.intelligentcontrolapp.R;
-import com.example.intelligentcontrolapp.network.ChangePasswordCallback;
+import com.example.intelligentcontrolapp.network.CustomCallback;
 import com.example.intelligentcontrolapp.network.NetworkUtils;
 
 public class ChangePasswordActivity extends AppCompatActivity {
@@ -28,34 +27,26 @@ public class ChangePasswordActivity extends AppCompatActivity {
         b_change_password = findViewById(R.id.b_change_password);
 
         //返回，销毁页面
-        findViewById(R.id.toolbar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        findViewById(R.id.toolbar).setOnClickListener(view -> finish());
 
         //修改密码点击事件
-        b_change_password.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validateInputs(et_new_password.getText().toString(), et_confirm_password.getText().toString())) {
-                    //获取http请求，修改密码
-                    NetworkUtils.Change_Password(ChangePasswordActivity.this, et_new_password.getText().toString(), new ChangePasswordCallback() {
-                        @Override
-                        public void onSuccess(String response) {
-                            Toast.makeText(ChangePasswordActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
+        b_change_password.setOnClickListener(view -> {
+            if (validateInputs(et_new_password.getText().toString(), et_confirm_password.getText().toString())) {
+                //获取http请求，修改密码
+                NetworkUtils.Change_Password(ChangePasswordActivity.this, et_new_password.getText().toString(), new CustomCallback<String>() {
+                    @Override
+                    public void onSuccess(String response) {
+                        Toast.makeText(ChangePasswordActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
 
-                        @Override
-                        public void onError(String error) {
-                            // 注册失败处理
-                            Toast.makeText(ChangePasswordActivity.this, "Registration failed: " + error, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    @Override
+                    public void onError(String error) {
+                        // 注册失败处理
+                        Toast.makeText(ChangePasswordActivity.this, "Registration failed: " + error, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-                }
             }
         });
 

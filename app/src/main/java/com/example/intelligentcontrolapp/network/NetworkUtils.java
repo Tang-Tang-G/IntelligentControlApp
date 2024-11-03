@@ -18,101 +18,54 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+
 public class NetworkUtils {
+    private static final OkHttpClient client = new OkHttpClient();
 
     //登录申请，检查了用户名和密码
-    public static void login(Context context, String username, String password, LoginCallback callback) {
-        new Thread(() -> {
-            try {
-                String UrlString = context.getString(R.string.URL_LOGIN);
-                HttpURLConnection connection = getHttpURLConnection(UrlString, true);
-                //连接服务器
-                connection.connect();
-                // 发送登录数据
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
-                String loginJson = String.format("{\"username\":\"%s\",\"password\":\"%s\"}", username, password);
+    public static void login(@NonNull Context context, String username, String password, CustomCallback<String> callback) {
+        String url = context.getString(R.string.URL_LOGIN);
+        String loginJson = String.format("{\"username\":\"%s\",\"password\":\"%s\"}", username, password);
 
-                writer.write(loginJson);
-                writer.flush();
-                writer.close();
-                // 处理响应
-                int responseCode = connection.getResponseCode();
+        Request request = new Request
+                .Builder()
+                .url(url)
+                .post(RequestBody.create(loginJson, MediaType.parse("application/json")))
+                .build();
 
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    // 读取响应数据
-                    InputStream inputStream = connection.getInputStream();
-                    String responseString = getStringFromInputStream(inputStream);
-
-                    JSONObject jsonResponse = new JSONObject(responseString);
-                    int code = jsonResponse.getInt("code");
-
-                    if (code == 200) {
-                        JSONObject data = jsonResponse.getJSONObject("data");
-                        String token = data.getString("token");
-                        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(token));
-                    } else {
-                        String message = jsonResponse.getString("message");
-                        new Handler(Looper.getMainLooper()).post(() -> callback.onError(message));
-                    }
-                } else {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        try {
-                            callback.onError("Login failed: " + connection.getResponseMessage());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                Log.e("NetworkUtils", "Exception occurred: ", e);
-                new Handler(Looper.getMainLooper()).post(() -> callback.onError("Error during login: " + e.getMessage()));
-            }
-        }).start();
+        client.newCall(request).enqueue(new CallbackConvert<>(body -> {
+            JSONObject obj = new JSONObject(body.string());
+            if (obj.getInt("code") != 200) throw new IOException("inner response code not 200");
+            return obj.getJSONObject("data").getString("token");
+        }, callback));
     }
 
     //注册申请，上传数据
-    public static void register(Context context, String username, String password, RegisterCallback callback) {
-        new Thread(() -> {
-            try {
-                Log.d("NetworkUtils", "Starting register request");
-                String urlString = context.getString(R.string.URL_REGISTER); // 获取字符串资源
-                HttpURLConnection connection = getHttpURLConnection(urlString, true);
+    public static void register(@NonNull Context context, String username, String password, CustomCallback<String> callback) {
+        String url = context.getString(R.string.URL_REGISTER);
+        String registerJson = String.format("{\"username\":\"%s\",\"password\":\"%s\"}", username, password);
 
-                connection.connect();
-                // 发送注册数据
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
-                String registerJson = String.format("{\"username\":\"%s\",\"password\":\"%s\"}", username, password);
-                writer.write(registerJson);
-                writer.flush();
-                writer.close();
+        Request request = new Request
+                .Builder()
+                .url(url)
+                .post(RequestBody.create(registerJson, MediaType.parse("application/json")))
+                .build();
 
-                // 处理响应
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    // 读取响应数据
-                    InputStream inputStream = connection.getInputStream();
-                    String responseString = getStringFromInputStream(inputStream);
-                    String result = "Success: " + responseCode + " --- " + connection.getResponseMessage() + " --- " + responseString;
-                    Log.d("NetworkUtils", result);
-                    callback.onSuccess(responseString);  // 使用responseString
-                } else {
-                    String result = "Error: " + responseCode + " --- " + connection.getResponseMessage();
-                    Log.d("NetworkUtils", result);
-                    callback.onError(result);
-                }
-
-            } catch (Exception e) {
-                Log.e("NetworkUtils", "Exception occurred: ", e);
-                callback.onError(e.toString());
-            }
-        }).start();
+        client.newCall(request).enqueue(new CallbackConvert<>(body -> {
+            JSONObject obj = new JSONObject(body.string());
+            if (obj.getInt("code") != 200) throw new IOException("inner response code not 200");
+            return "success";
+        }, callback));
     }
 
     //修改密码
-    public static void Change_Password(Context context, String new_password, ChangePasswordCallback callback) {
+    public static void Change_Password(Context context, String new_password, CustomCallback<String> callback) {
         new Thread(() -> {
             try {
                 Log.d("NetworkUtils", "Starting change_password request");
@@ -202,61 +155,27 @@ public class NetworkUtils {
     }
 
     //获取所有的信息
-    public static void getDataInfo(Context context, DataCallback callback) {
-        new Thread(() -> {
-            try {
-//                String urlString = context.getString(R.string.MESSAGE); // 信息的URL
-                HttpURLConnection connection = getHttpURLConnection("http://47.108.27.238/api/my/device", false);
-                //发送请求头
-//                String token = MyApplication.getPreferencesManager().getToken();
-                String token ="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Mywic3ViIjoid3p5Iiwicm9sZSI6InVzZXIiLCJleHAiOjE3MzA1NjE5NDJ9.UsHPockSZ_0RYJaAeDq2qHGc4FveIFYDR7Vbd68oj2I";
-                connection.setRequestProperty("Authorization", "Bearer " + token);
-                connection.setRequestProperty("Accept", "application/json");
+    public static void getDataInfo(@NonNull Context context, CustomCallback<JSONObject> callback) {
+        String url = context.getString(R.string.MESSAGE); // 信息的URL
+        String token = MyApplication.getPreferencesManager().getToken();
 
-                connection.connect();
-                int responseCode = connection.getResponseCode();
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
 
-                Log.e("DataInfo","Responsecode:"+responseCode);
-
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    InputStream inputStream = connection.getInputStream();
-                    String responseString = getStringFromInputStream(inputStream);
-                    JSONObject jsonResponse = new JSONObject(responseString);
-                    int code = jsonResponse.getInt("code");
-
-                    Log.e("DataInfo","code:"+code);
-
-                    if (code == 200) {
-                        // 假设返回的信息在data字段中
-                        JSONObject DataInfo = jsonResponse.getJSONObject("data");
-                        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(DataInfo));
-                    }
-                    else
-                    {
-                        String message = jsonResponse.getString("message");
-                        new Handler(Looper.getMainLooper()).post(() -> callback.onError(message));
-                    }
-                } else {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        try {
-                            callback.onError("Fetch device info failed: " + connection.getResponseMessage());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                new Handler(Looper.getMainLooper()).post(() -> callback.onError("Error during fetch device info: " + e.getMessage()));
-            }
-        }).start();
+        client.newCall(request).enqueue(new CallbackConvert<>(body -> {
+            JSONObject obj = new JSONObject(body.string());
+            if (obj.getInt("code") != 200) throw new IOException("inner response code not 200");
+            return obj.getJSONObject("data");
+        }, callback));
     }
 
     //获取HttpURLConnection
     public static @NonNull HttpURLConnection getHttpURLConnection(String UrlString, boolean IsPost) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(UrlString).openConnection();
-        // 配置连接参数
-//        connection.setDoOutput(true);
-//        connection.setDoInput(true);
+
         if (IsPost) {
             connection.setRequestMethod("POST");
         } else {
