@@ -2,12 +2,15 @@ package com.example.intelligentcontrolapp.fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -15,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -27,6 +31,7 @@ import com.example.intelligentcontrolapp.db.Device;
 import com.example.intelligentcontrolapp.db.House;
 import com.example.intelligentcontrolapp.network.CustomCallback;
 import com.example.intelligentcontrolapp.network.NetworkUtils;
+import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -190,21 +195,22 @@ public class MainFragment extends Fragment {
         deviceTypeView.setText(deviceType);
 
         SwitchCompat s = deviceView.findViewById(R.id.off_on);
-        // 读取当前状态
         boolean currentStatus = s.isChecked();
         Log.d("MainFragment", "Current status of " + deviceName + " is " + (currentStatus ? "ON" : "OFF"));
-
-        s.setOnCheckedChangeListener((buttonView,isChecked)->{
+        s.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // 切换状态（开/关）
             toggleSwitch(deviceID, isChecked, deviceView);
         });
 
+        //尝试初始化，设置滑动条的值的变化类
+        Slider slider = deviceView.findViewById(R.id.slider);
+
+        checkSlider(deviceView,slider);
         return deviceView;
     }
 
     private void toggleSwitch(int deviceID, boolean isChecked, View deviceView) {
         // 这里可以根据具体的实现方式，通过网络请求或本地操作更新设备状态
-
         // 发送网络请求更新设备状态
         String service_name = isChecked ? "open" : "close";
 
@@ -218,6 +224,48 @@ public class MainFragment extends Fragment {
                 onError(message);
             }
         });
+    }
+    private void checkSlider(View deviceView, Slider slider) {
+        if (slider != null) {
+
+            EditText ev_value = deviceView.findViewById(R.id.value_slider);
+
+            // 设置EditText的值变化监听器
+            ev_value.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    try {
+                        int value = Integer.parseInt(s.toString());
+                        slider.setValue(value);
+                    } catch (NumberFormatException e) {
+                        // 处理无效的输入
+                        Log.e("MainFragment", "Invalid input for slider value: " + s.toString(), e);
+                    }
+                }
+            });
+
+            slider.addOnChangeListener(new Slider.OnChangeListener() {
+                @Override
+                public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                    int volume = (int) value;
+                    ev_value.setText(String.valueOf(volume));
+                }
+            });
+
+
+        } else {
+            Log.e("MainFragment", "Slider is null");
+        }
     }
 
 

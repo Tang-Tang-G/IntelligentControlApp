@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class House {
+
     private String name;
     private List<Area> areas;
 

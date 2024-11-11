@@ -16,19 +16,23 @@ public class JsonParser {
             JSONArray housesDevices = data.getJSONArray("houses_devices");
             for (int i = 0; i < housesDevices.length(); i++) {
                 JSONObject house = housesDevices.getJSONObject(i);
-                String houseName = house.getString("house_name");
+                JSONObject house_info = house.getJSONObject("house_info");
+                String houseName = house_info.getString("house_name");
                 Log.e("HouseName","houseName:"+houseName);
+
                 House newHouse = new House(houseName);  // 创建新房屋对象
                 JSONArray areasDevices = house.getJSONArray("areas_devices");
                 for (int j = 0; j < areasDevices.length(); j++) {
                     JSONObject area = areasDevices.getJSONObject(j);
-                    String areaName = area.getString("area_name");
+                    JSONObject area_info = area.getJSONObject("area_info");
+                    String areaName = area_info.getString("area_name");
+
                     Area newArea = new Area(areaName);  // 创建新区域对象
+
                     JSONArray devices = area.getJSONArray("devices");
                     for (int k = 0; k < devices.length(); k++) {
                         JSONObject device = devices.getJSONObject(k);
                         String deviceName = device.getString("device_name");
-
                         String deviceType = device.getJSONObject("device_type").getString("type_name");
                         int deviceID = device.getInt("device_id");
                         // 创建设备对象并添加到区域

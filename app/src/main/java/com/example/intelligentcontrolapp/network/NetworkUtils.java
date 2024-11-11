@@ -156,7 +156,7 @@ public class NetworkUtils {
 
     //获取所有的信息
     public static void getDataInfo(@NonNull Context context, CustomCallback<JSONObject> callback) {
-       new Thread(()->{
+//        new Thread(()->{
         String url = context.getString(R.string.MESSAGE); // 信息的URL
         String token = MyApplication.getPreferencesManager().getToken();
 
@@ -171,27 +171,49 @@ public class NetworkUtils {
             if (obj.getInt("code") != 200) throw new IOException("inner response code not 200");
             return obj.getJSONObject("data");
         }, callback));
-       }).start();
+//    }).start();
     }
 
-    public static void getService(@NonNull Context context,int deviceID,String service_name,CustomCallback<Boolean> callback){
-        new Thread(()->{
-            String url = context.getString(R.string.MESSAGE);
-            url+="/"+deviceID+"/"+service_name;
-            String token = MyApplication.getPreferencesManager().getToken();
+    public static void getService(@NonNull Context context, int deviceID, String service_name,
+                                  CustomCallback<Boolean> callback
+    ) {
+        String url = context.getString(R.string.MESSAGE);
+        url += "/" + deviceID + "/" + service_name;
+        String token = MyApplication.getPreferencesManager().getToken();
 
-            Request request = new Request.Builder()
-                    .url(url)
-                    .get()
-                    .addHeader("Authorization", "Bearer " + token)
-                    .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
 
-            client.newCall(request).enqueue(new CallbackConvert<>(body -> {
-                JSONObject obj = new JSONObject(body.string());
-                if (obj.getInt("code") != 200) throw new IOException("inner response code not 200");
-                return true;
-            }, callback));
-        }).start();
+        client.newCall(request).enqueue(new CallbackConvert<>(body -> {
+            JSONObject obj = new JSONObject(body.string());
+            if (obj.getInt("code") != 200) throw new IOException("inner response code not 200");
+            return true;
+        }, callback));
+    }
+
+    public static void validateToken(@NonNull Context context,
+                                     CustomCallback<Boolean> callback
+    ) {
+        String url = context.getString(R.string.TOKEN);
+        Log.d("Valid Error",url);
+        String token = MyApplication.getPreferencesManager().getToken();
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+
+        client.newCall(request).enqueue(new CallbackConvert<>(body -> {
+            JSONObject obj = new JSONObject(body.string());
+
+            Log.d("Valid Error",obj.toString());
+
+            if (obj.getInt("code") != 200) throw new IOException("inner response code not 200");
+            return true;
+        }, callback));
     }
 
 

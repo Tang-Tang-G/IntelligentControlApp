@@ -1,6 +1,7 @@
 package com.example.intelligentcontrolapp.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,8 @@ import com.example.intelligentcontrolapp.fragments.HomeFragment;
 import com.example.intelligentcontrolapp.fragments.MainFragment;
 import com.example.intelligentcontrolapp.fragments.MyFragment;
 import com.example.intelligentcontrolapp.fragments.SceneFragment;
+import com.example.intelligentcontrolapp.network.CustomCallback;
+import com.example.intelligentcontrolapp.network.NetworkUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -23,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private List<Fragment> list;
     private BottomNavigationView bottomNavigationView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,20 @@ public class MainActivity extends AppCompatActivity {
         list.add(new SceneFragment());
         list.add(new MyFragment());
 
+
+        NetworkUtils.validateToken(this, new CustomCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+                Log.d("token check", "success");
+                Log.d("Token",MyApplication.getPreferencesManager().getToken());
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("Valid Error", "no valid");
+                MyApplication.getPreferencesManager().clearToken();
+            }
+        });
         showFragment(list.get(0));
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int i = item.getItemId();
@@ -52,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
     }
+
 
     private void showFragment(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

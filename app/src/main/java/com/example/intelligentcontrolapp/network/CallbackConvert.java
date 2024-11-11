@@ -11,8 +11,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class CallbackConvert<T> implements Callback {
-    CustomCallback<T> callback;
     Convert<T> converter;
+    CustomCallback<T> callback;
     public CallbackConvert(Convert<T> converter, CustomCallback<T> callback) {
         this.callback = callback;
         this.converter = converter;

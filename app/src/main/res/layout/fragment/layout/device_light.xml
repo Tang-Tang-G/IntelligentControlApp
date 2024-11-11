@@ -66,19 +66,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="亮度:"
+        android:textSize="16sp"
+        android:layout_gravity="center_vertical" />
+<EditText
+    android:id="@+id/value_slider"
+    android:gravity="center_vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="亮度:"
     android:textSize="16sp"
-    android:layout_gravity="center_vertical" />
+    android:text="20"
+    android:textStyle="italic"
+    />
     <com.google.android.material.slider.Slider
-        android:id="@+id/light_slider"
+       android:layout_gravity="center_vertical"
+        android:id="@+id/slider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:valueFrom="0"
         android:valueTo="100"
+        android:value="20"
         android:stepSize="1"
-        app:labelBehavior="gone" />
+        app:labelBehavior="gone"
+        app:thumbElevation="5dp"
+        app:trackColorInactive="@color/gray_blue"
+        />
 </LinearLayout>
     </LinearLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

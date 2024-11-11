@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.intelligentcontrolapp.network.CallbackConvert;
 import com.example.intelligentcontrolapp.network.CustomCallback;
 import com.example.intelligentcontrolapp.network.NetworkUtils;
 
@@ -22,12 +23,13 @@ public class PreferencesManager {
         NetworkUtils.getDataInfo(context, new CustomCallback<JSONObject>() {
             @Override
             public void onSuccess(JSONObject dataInfo) {
-                Log.d(TAG, "Success datainfo  is:  "+dataInfo.toString());
+                Log.d(TAG, "Success datainfo  is:  " + dataInfo.toString());
 
                 //获取家庭数据，区域数据，设备数据
                 houses = jsonParser.parseJsonData(dataInfo);
                 callback.onSuccess(houses);
             }
+
             @Override
             public void onError(String message) {
                 Log.e(TAG, "Error datainfo:" + message);
@@ -78,6 +80,7 @@ public class PreferencesManager {
         editor.putString("user_name", username);
         editor.apply(); // 使用 apply() 以异步方式保存
     }
+
 
     public String getUserName() {
         return sharedPreferences.getString("user_name", null); // 默认返回 null

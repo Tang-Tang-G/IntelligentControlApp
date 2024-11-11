@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyFragment extends Fragment {
-
     private List<Class<?>> targetActivities;
     private Button exit_login;
     private View rootview;
@@ -134,6 +133,10 @@ public class MyFragment extends Fragment {
             // 恢复原来的颜色
             view.setBackgroundColor(getResources().getColor(R.color.gray_white));
         }, COLOR_CHANGE_DURATION); // 延迟时间
+    }
+
+    private void onAuthError() {
+
     }
 
     @Override

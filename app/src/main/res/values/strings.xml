@@ -4,5 +4,5 @@
     <string name="URL_LOGIN">http://47.108.27.238/api/login</string>
     <string name="URL_REGISTER">http://47.108.27.238/api/signup</string>
     <string name="MESSAGE">http://47.108.27.238/api/my/device</string>
-
+    <string name="TOKEN">http://47.108.27.238/api/auth</string>
 </resources>
